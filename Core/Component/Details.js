@@ -1,76 +1,83 @@
 
-import { Text, StyleSheet, View, ListView, TextInput, ActivityIndicator, Alert } from 'react-native';
-import { ActionCreators } from '../actions'
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux'
-import React, { Component } from 'react';
+  import { Text, StyleSheet, View, ListView, TextInput, ActivityIndicator, Alert, Image } from 'react-native';
+  import { ActionCreators } from '../actions'
+  import { connect } from 'react-redux';
+  import { bindActionCreators } from 'redux'
+  import React, { Component } from 'react';
+  import { YellowBox } from 'react-native';
+  YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated'])
 
-function mapStateToProps(state) {
-  return {
-    sources: state.sources,
-  };
-}
+  var pId;
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(ActionCreators, dispatch);
-}
+  export default class Details extends React.Component {
 
-class Details extends React.Component {
+    static navigationOptions  = {
+        title: 'Details'
+      };
 
-  static navigationOptions  = {
-      title: 'Details'
-    };
+      static navigationOptions = ({navigation}) => ({
+        title: 'Details',
+      });
+    
 
+    constructor(props) {
+        super(props);
+        this.state = {
+          dImage:'',
+          dTitle: '',
+          dDescription: ''
+        }
+      }
 
-  constructor(props) {
-      super(props);
-      this.state = {
+      componentDidMount() {
+
+        pId = this.props.navigation.state.params.name;
+        this.setState({
+        dImage : pId.urlToImage,
+        dTitle : pId.title,
+        dDescription : pId.description
+        });
+      }
+
+      render() {
+        return (
+           <View>
+            <Image
+              style={{margin:10, width: 335, height: 150}}
+              source={{uri: this.state.dImage}}
+            />
+            <Text style={{marginTop:20, marginLeft:10, fontSize: 18}}>
+                {this.state.dTitle}
+            </Text>
+            <Text style={{marginTop:20, marginLeft:10, fontSize: 16}}>
+                {this.state.dDescription}
+            </Text>
+           </View>
+        );
       }
     }
 
+    const styles = StyleSheet.create({
 
-    componentWillMount(){
-      console.log("WillMount:::::::");
-    }
+    MainContainer :{
+      justifyContent: 'center',
+      flex:1,
+      margin: 7,
+      },
 
-    componentDidMount() {
+    rowViewContainer: {
+      fontSize: 17,
+      padding: 10
+      },
 
-      console.log('ReduxValue:::::' + JSON.stringify(this.props.sources));
+      TextInputStyleClass:{
+      textAlign: 'center',
+      height: 40,
+      borderWidth: 1,
+      borderColor: '#009688',
+      borderRadius: 7 ,
+      backgroundColor : "#FFFFFF"
+      }
 
-    }
+    });
 
-    render() {
-      return (
-        <View style={styles.MainContainer}>
-
-
-        </View>
-      );
-    }
-  }
-
-  const styles = StyleSheet.create({
-
-   MainContainer :{
-    justifyContent: 'center',
-    flex:1,
-    margin: 7,
-    },
-
-   rowViewContainer: {
-     fontSize: 17,
-     padding: 10
-    },
-
-    TextInputStyleClass:{
-     textAlign: 'center',
-     height: 40,
-     borderWidth: 1,
-     borderColor: '#009688',
-     borderRadius: 7 ,
-     backgroundColor : "#FFFFFF"
-     }
-
-  });
-
-  export default connect(mapStateToProps, mapDispatchToProps)(Details);
